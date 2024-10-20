@@ -6,7 +6,7 @@ import useAuth from "../hooks/useAuth";
 import { toast } from "react-hot-toast";
 
 export default function Page() {
-  const { login, loading, error, data } = useAuth();
+  const { login, loading, data } = useAuth();
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
   const router = useRouter();
@@ -94,7 +94,7 @@ export default function Page() {
           href="/register"
           className="text-sm hover:underline hover:text-blue-500 transition-colors duration-300"
         >
-          Don't have an account? Sign up now!
+          Don&apos;t have an account? Sign up now!
         </Link>
       </div>
     </div>

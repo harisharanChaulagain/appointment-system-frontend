@@ -5,7 +5,7 @@ import React, { useEffect, useState } from "react";
 import useAuth from "../hooks/useAuth";
 
 export default function Page() {
-  const { register, loading, error, data } = useAuth();
+  const { register, loading,  data } = useAuth();
   const [email, setEmail] = useState("");
   const [username, setUsername] = useState("");
   const [password, setPassword] = useState("");
