@@ -14,9 +14,11 @@ export default function Page() {
 
   useEffect(() => {
     const token = localStorage.getItem("token");
-    if (token && !hasToastShown.current) {
-      hasToastShown.current = true;
-      toast.success("You are already logged in.");
+    if (token) {
+      if (!hasToastShown.current) {
+        hasToastShown.current = true;
+        toast.success("You are already logged in.");
+      }
       router.push("/");
     }
   }, [router]);

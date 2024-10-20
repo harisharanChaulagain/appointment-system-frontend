@@ -2,6 +2,8 @@
 import React, { useEffect, useState } from "react";
 import { useRouter } from "next/navigation";
 import axiosInstance from "./utils/axios";
+import AppointmentSchedulers from "./components/AppointmentSchedulars";
+import Header from "./components/Header";
 
 export default function HomePage() {
   const router = useRouter();
@@ -41,7 +43,12 @@ export default function HomePage() {
   }
 
   if (isAuthenticated) {
-    return <div>Home Page</div>;
+    return (
+      <div>
+        <Header/>
+        <AppointmentSchedulers/>
+      </div>
+    );
   }
 
   return null;

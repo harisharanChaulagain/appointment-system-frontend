@@ -1,7 +1,7 @@
 import axios from "axios";
 
 const axiosInstance = axios.create({
-  baseURL: "http://localhost:5000",
+  baseURL: "https://appointment-system-backend-o12e.onrender.com",
   withCredentials: true,
 });
 
