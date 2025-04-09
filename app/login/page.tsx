@@ -3,17 +3,54 @@ import Link from "next/link";
 import { useRouter } from "next/navigation";
 import React, { useEffect, useRef, useState } from "react";
 import useAuth from "../hooks/useAuth";
+import useGoogleLoginOrRegister from "../hooks/useGoogleLoginOrRegister";
 import { toast } from "react-hot-toast";
+
+interface GoogleLoginResponse {
+  credential: string;
+}
 
 export default function Page() {
   const { login, loading, data } = useAuth();
+  const {
+    googleLogin,
+    loading: googleLoading,
+    data: googleData,
+  } = useGoogleLoginOrRegister();
+
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
   const router = useRouter();
   const hasToastShown = useRef(false);
+  console.log("Google Client ID:", process.env.NEXT_PUBLIC_GOOGLE_CLIENT_ID); // Debugging Google Client ID
+
+  useEffect(() => {
+    const script = document.createElement("script");
+    script.src = "https://accounts.google.com/gsi/client";
+    script.async = true;
+    script.onload = () => {
+      window.google?.accounts.id.initialize({
+        client_id: process.env.NEXT_PUBLIC_GOOGLE_CLIENT_ID,
+        callback: handleGoogleLoginSuccess,
+      });
+
+      window.google?.accounts.id.renderButton(
+        document.getElementById("google-login-button")!,
+        { theme: "outline", size: "large" }
+      );
+    };
+    document.head.appendChild(script);
+  }, []);
+
+  const handleGoogleLoginSuccess = async (response: GoogleLoginResponse) => {
+    const googleToken = response.credential;
+    console.log("Google Login Token:", googleToken); // Debugging Google Token
+    await googleLogin(googleToken);
+  };
 
   useEffect(() => {
     const token = localStorage.getItem("token");
+    console.log("Local Storage Token:", token); // Debugging token in localStorage
     if (token) {
       if (!hasToastShown.current) {
         hasToastShown.current = true;
@@ -25,15 +62,25 @@ export default function Page() {
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
+    console.log("Form submitted with Email:", email, "Password:", password); // Debugging email and password
     await login(email, password);
   };
 
   useEffect(() => {
     if (data && data?.token) {
+      console.log("Login successful, Token:", data.token); // Debugging token after login
       localStorage.setItem("token", data.token);
       router.push("/");
     }
   }, [data?.token, router]);
+
+  useEffect(() => {
+    if (googleData?.token) {
+      console.log("Google Login successful, Token:", googleData.token); // Debugging google login token
+      localStorage.setItem("token", googleData.token);
+      router.push("/");
+    }
+  }, [googleData?.token, router]);
 
   return (
     <div className="w-screen h-screen flex justify-center items-center">
@@ -90,6 +137,14 @@ export default function Page() {
             {loading ? "Login..." : "Login"}
           </button>
         </form>
+        <div className="py-1 text-sm">----------- OR ----------</div>
+        <div
+          id="google-login-button"
+          className="w-full flex items-center justify-center bg-gray-100 text-sm p-4 rounded-md cursor-pointer"
+        >
+          Login With Google
+        </div>
+
         <Link
           href="/register"
           className="text-sm hover:underline hover:text-blue-500 transition-colors duration-300"
