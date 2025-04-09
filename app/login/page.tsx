@@ -22,7 +22,7 @@ export default function Page() {
   const [password, setPassword] = useState("");
   const router = useRouter();
   const hasToastShown = useRef(false);
-  console.log("Google Client ID:", process.env.NEXT_PUBLIC_GOOGLE_CLIENT_ID); // Debugging Google Client ID
+
 
   useEffect(() => {
     const script = document.createElement("script");
@@ -30,7 +30,8 @@ export default function Page() {
     script.async = true;
     script.onload = () => {
       window.google?.accounts.id.initialize({
-        client_id: process.env.NEXT_PUBLIC_GOOGLE_CLIENT_ID,
+        // client_id: process.env.NEXT_PUBLIC_GOOGLE_CLIENT_ID,
+        client_id: "310963895793-c890f9q1fuftas3doo5ds50nm275g68m.apps.googleusercontent.com",
         callback: handleGoogleLoginSuccess,
       });
 
